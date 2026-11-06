@@ -105,6 +105,12 @@ def tick(compose, service, root):
         jsonfile(statefile,state,0o644)
     def installed():
         cid=run(*dc,"ps","-q",service)
+        configured=run("docker","inspect","-f","{{.Config.Image}}",cid)
+        prefix=IMAGE+"@"
+        if configured.startswith(prefix) and DIGEST.fullmatch(configured[len(prefix):]):
+            # A running pinned container keeps its digest even when Docker drops
+            # the old RepoDigests entry after the mutable latest tag moves.
+            return configured[len(prefix):]
         return image_digest(run("docker","inspect","-f","{{.Image}}",cid))
     def start(target):
         change_image(compose,service,target)
@@ -144,6 +150,8 @@ def tick(compose, service, root):
             report("installed","Published image is installed.",target)
             return
         report("installing","Verifying and pulling the official latest image.",target)
+        # Keep the exact prior digest available for rollback.
+        run("docker","pull",IMAGE+"@"+state["current"],timeout=600)
         run("docker","pull",IMAGE+":latest",timeout=600)
         if image_digest(IMAGE+":latest")!=target:
             raise ValueError("Published release changed; check again")
