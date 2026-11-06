@@ -6,3 +6,5 @@ audit.sqlite*
 
 public/preview-viewer.html
 public/preview-font-licenses.txt
+
+*.tsbuildinfo

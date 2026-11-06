@@ -17,3 +17,7 @@ Mount persistent storage at /app/data (the VM uses Docker volume gm-garage-conso
 Object previews run in a sandboxed frame with an opaque origin and a bundled viewer. Text, HTML, scripts and SVG are displayed as source. PDF pages render to canvas. Modern Office and OpenDocument files show text excerpts. ZIP and EPUB show entry names. Browser-supported images, audio and video use built-in decoders. Text previews read at most 256 KiB. Other viewers accept files up to 24 MiB. Download always returns the original file as an attachment. Preview reads have a separate audit action.
 
 Authentication → Console sign-in lets a verified Authentik administrator enable SSO-only mode. This policy persists in the mounted audit database. Enabling it revokes existing password sessions; old sessions remain invalid even if password sign-in is later re-enabled. Sessions created before the console recorded login method must sign in again through Authentik to change the policy.
+
+Application components, API routes, preview tooling and Next.js configuration are written in TypeScript. Run `bun run typecheck` for strict checking and `bun run build` for the production build. Next.js and the isolated preview viewer generate JavaScript for the browser.
+
+The console stores audit events and the sign-in policy in SQLite using Bun's built-in SQLite driver. The production database is mounted at `/app/data/audit.sqlite`. Garage continues to own object data, bucket configuration and access keys.
