@@ -4,7 +4,7 @@ import {errorMessage} from "../lib/models";
 
 import {useFilter} from "./form";
 import {useState, useEffect} from "react";
-import {LayoutDashboard, Database, KeyRound, Network, Terminal, ArrowUpRight, ChevronRight, Search, Plus, Layers, ShieldCheck, LogOut, RefreshCw, HardDrive, Box, Server} from "lucide-react";
+import {LayoutDashboard, Database, KeyRound, Network, Terminal, ArrowUpRight, ChevronRight, Search, Plus, Layers, ShieldCheck, LogOut, RefreshCw, ArrowUpCircle, HardDrive, Box, Server} from "lucide-react";
 import {Button} from "../components/ui/button";
 import Bucket from "./bucket";
 import BucketTable from "./bucket-table";
@@ -12,6 +12,7 @@ import CreateForm from "./create-form";
 import Cluster from "./cluster";
 import {ThemeSwitch} from "./theme";
 import KeyList from "./key-list";
+import Updates from "./updates";
 import Authentication from "./authentication";
 import Audit from "./audit";
 import Operations from "./operations";
@@ -28,7 +29,7 @@ export async function call(input:AdminInput|StorageInput,signal?:AbortSignal) {
   return data;
 }
 export const label = (b:BucketRow) => b.globalAliases?.[0] || b.localAliases?.[0]?.alias || b.id;
-const menu = [["Overview",LayoutDashboard],["Buckets",Database],["Access keys",KeyRound],["Cluster",Network],["Admin operations",Terminal],["Audit log",ShieldCheck],["Authentication",KeyRound]] as const;
+const menu = [["Overview",LayoutDashboard],["Buckets",Database],["Access keys",KeyRound],["Cluster",Network],["Admin operations",Terminal],["Audit log",ShieldCheck],["Authentication",KeyRound],["Updates",ArrowUpCircle]] as const;
 function Rack() {return <svg className="rack" aria-hidden="true" viewBox="0 0 260 155"><defs><pattern id="dots" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#66858e"/></pattern></defs><rect width="260" height="155" fill="url(#dots)"/>{[76,53,30].map((y,i)=><g key={y} transform={'translate(47 '+y+')'} strokeLinejoin="round"><path d="M0 26 77 0 156 25 79 54Z" fill={i===2?"#e9f8fb":"#7299a2"} stroke="#94bec8"/><path d="m0 26 79 28v17L0 43Z" fill="#426572" stroke="#a6c7ca"/><path d="m79 54 77-29v17L79 71Z" fill="#253f4d" stroke="#a6c7ca"/><path d="m12 35 40 14" stroke="#ffaf48" strokeWidth="3"/><circle cx="135" cy="40" r="2" fill="#65ddda"/></g>)}</svg>}
 export default function Console({initial,user}:{initial:Dashboard;user:string}) {
   const [data,setData]=useState(initial),[tab,setTab]=useState("Overview"),[bucket,setBucket]=useState<BucketRow|null>(null),[error,setError]=useState(""),[create,setCreate]=useState(""),[busy,setBusy]=useState(false);
@@ -49,6 +50,7 @@ export default function Console({initial,user}:{initial:Dashboard;user:string}) 
   {tab==="Access keys" && <><div className="toolbar"><h2>{keys.length} access keys</h2><Button onClick={()=>setCreate("key")}><Plus size={16}/>Create key</Button></div><KeyList keys={keys}/></>}
   {tab==="Cluster" && <Cluster data={data}/>}
   {tab==="Admin operations" && <Operations/>}
+  {tab==="Updates" && <Updates/>}
   {tab==="Authentication" && <Authentication refreshId={data}/>}
   {tab==="Audit log" && <Audit refreshId={data}/>}
   {create && <CreateForm kind={create} close={()=>setCreate("")} onCreated={refresh}/>}

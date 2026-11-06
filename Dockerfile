@@ -8,6 +8,8 @@ RUN bun run build
 
 FROM oven/bun:1.4.2
 WORKDIR /app
+ARG GARAGE_ADMIN_REVISION
+ENV GARAGE_ADMIN_REVISION=$GARAGE_ADMIN_REVISION
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 HOSTNAME=0.0.0.0 PORT=3000 AUDIT_DB=/app/data/audit.sqlite
 COPY --from=build --chown=bun:bun /app/.next/standalone ./
 COPY --from=build --chown=bun:bun /app/.next/static ./.next/static

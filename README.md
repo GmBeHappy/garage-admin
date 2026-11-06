@@ -82,3 +82,28 @@ To build locally, clone this repository and run `docker build -t garage-admin:lo
 ## License
 
 The original console code is distributed under the [MIT License](LICENSE). The bundled Garage API specification, Garage artwork and third-party components retain their upstream terms. See [third-party notices](THIRD_PARTY.md).
+
+## In-app updates
+
+Open **Updates** to compare the running build with the official GHCR `latest` image. **Check now** refreshes the comparison. The console checks periodically while this page is open. Publishing a new image alone does not restart your service.
+
+To enable the **Upgrade console** button on a single Linux Docker Compose host, run the supplied host updater as the user who manages Docker. The web container never needs the Docker socket. These steps assume the standard Compose project name derived from the directory, a literal official GHCR image in the target service, and the image's default UID 1000.
+
+1. Install [the host helper](ops/compose-updater.py) outside the container. Use Python 3.10+ and Docker Compose v2. The account running the helper needs permission to edit the Compose file and manage the Docker service.
+2. Create a private host directory, for example `/srv/garage-updates`, with two subdirectories named `status` and `queue`. The host helper owns the parent and status directories. Give the container's UID write access to `queue`.
+3. Add these mounts to the console service alongside its existing audit volume, then recreate just the console service:
+
+   ```yaml
+   volumes:
+     - console-data:/app/data
+     - /srv/garage-updates/status:/run/garage-updater/status:ro
+     - /srv/garage-updates/queue:/run/garage-updater/queue
+   ```
+
+4. Run the helper once, then schedule the same command every minute in the Docker user's crontab. Substitute absolute paths and your actual Compose service name:
+
+   ```cron
+   * * * * * /usr/bin/python3 /opt/garage-admin/compose-updater.py --compose /srv/garage-admin/compose.yaml --service console --state /srv/garage-updates
+   ```
+
+An authenticated console administrator can now request an upgrade to the displayed digest. The helper rechecks GHCR, pins that digest in Compose, and recreates only the console service. It retains the existing environment, ports and SQLite volume. If startup verification fails, the helper restores the previously running image. Upgrade requests appear in the audit log. The Updates page shows progress and the host's last result. Use an external backup for your persistent SQLite data.

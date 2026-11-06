@@ -10,6 +10,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: container-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Build and test (${{ matrix.arch }})
@@ -34,6 +38,7 @@ jobs:
         with:
           context: .
           load: true
+          build-args: GARAGE_ADMIN_REVISION=${{ github.sha }}
           platforms: linux/${{ matrix.arch }}
           tags: ${{ env.IMAGE }}:${{ github.sha }}-${{ matrix.arch }}
           labels: |
@@ -83,4 +88,5 @@ jobs:
           if [[ "$GITHUB_REF_TYPE" == tag ]]; then tags+=(-t "$image:$GITHUB_REF_NAME"); fi
           docker buildx imagetools create "${tags[@]}" \
             --annotation "index:org.opencontainers.image.source=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" \
+            --annotation "index:org.opencontainers.image.revision=$GITHUB_SHA" \
             "$image:$GITHUB_SHA-amd64" "$image:$GITHUB_SHA-arm64"
