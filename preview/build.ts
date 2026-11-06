@@ -26,3 +26,5 @@ await Bun.write("public/preview-viewer.html",`<!doctype html><html><head><meta c
 </style></head><body><main></main><script type="module">${script}</script></body></html>`);
 
 await Bun.write("public/preview-font-licenses.txt",await readFile(fontDir+"LICENSE_FOXIT","utf8")+"\n"+await readFile(fontDir+"LICENSE_LIBERATION","utf8"));
+const notices = await Promise.all(["pdfjs-dist/LICENSE","@zip.js/zip.js/LICENSE"].map(file=>readFile("node_modules/"+file,"utf8")));
+await Bun.write("public/preview-library-licenses.txt",notices.join("\n\n"));

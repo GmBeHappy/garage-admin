@@ -2,3 +2,9 @@
 node_modules
 .env*
 .git
+*.env
+*.sqlite*
+docs/
+.github/
+public/preview-viewer.html
+public/preview-*-licenses.txt

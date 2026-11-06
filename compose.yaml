@@ -1,0 +1,19 @@
+services:
+  console:
+    image: ghcr.io/gmbehappy/garage-admin:latest
+    restart: unless-stopped
+    env_file:
+      - path: ./console.env
+        format: raw
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - console-data:/app/data
+    networks:
+      - garage
+volumes:
+  console-data:
+networks:
+  garage:
+    external: true
+    name: ${GARAGE_NETWORK:-garage_default}

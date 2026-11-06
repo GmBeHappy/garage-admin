@@ -8,3 +8,5 @@ public/preview-viewer.html
 public/preview-font-licenses.txt
 
 *.tsbuildinfo
+public/preview-library-licenses.txt
+console.env
