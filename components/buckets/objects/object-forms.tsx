@@ -1,10 +1,10 @@
 "use client";
 import {useEffect,useRef,useState} from "react";
 import {Upload,FolderUp,FolderPlus} from "lucide-react";
-import {Button} from "../components/ui/button";
-import {folderSchema} from "../lib/forms";
-import {bytes} from "../lib/file-types";
-import {FormErrors,useValidatedForm} from "./form";
+import {Button} from "../../ui/button";
+import {folderSchema} from "../../../lib/forms";
+import {bytes} from "../../../lib/file-types";
+import {FormErrors,useValidatedForm} from "../../ui/form";
 type Picked={file:File;path:string};
 // Walk a dropped file or directory entry, keeping each file's path relative to the drop.
 async function walk(entry:FileSystemEntry,base=""):Promise<Picked[]>{

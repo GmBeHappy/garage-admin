@@ -2,10 +2,10 @@
 import {errorMessage} from "../lib/models";
 
 import {z} from "zod";
-import {Button} from "../components/ui/button";
+import {Button} from "./ui/button";
 import {bucketName,keyName} from "../lib/forms";
-import {useValidatedForm,FormErrors} from "./form";
-import {call} from "./console";
+import {useValidatedForm,FormErrors} from "./ui/form";
+import {call} from "../lib/client";
 export default function CreateForm({kind,close,onCreated}:{kind:string;close:()=>void;onCreated:()=>Promise<void>}){
  const key=kind==="key";
  const {register,handleSubmit,setError,formState:{errors,isSubmitting}}=useValidatedForm(z.object({name:key?keyName:bucketName}),{name:""});

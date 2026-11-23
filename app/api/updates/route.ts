@@ -1,6 +1,6 @@
 import {z} from "zod";
 import {origin,session} from "../../../lib/session";
-import {audited} from "../../../lib/audit";
+import {audited} from "../../../lib/db/audit";
 import {digest,latest,worker,ready,queue,pending,relation} from "../../../lib/updates";
 const json=(body:unknown,status=200)=>Response.json(body,{status,headers:{"Cache-Control":"no-store"}});
 export async function GET(req:Request){

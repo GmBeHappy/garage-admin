@@ -1,12 +1,12 @@
 "use client";
-import type {RefreshProps} from "../lib/models";
-import {errorMessage} from "../lib/models";
+import type {RefreshProps} from "../../lib/models";
+import {errorMessage} from "../../lib/models";
 
 import {useEffect,useState} from "react";
 import {ShieldCheck} from "lucide-react";
-import {Button} from "../components/ui/button";
-import {signInPolicy} from "../lib/forms";
-import {useValidatedForm,FormErrors} from "./form";
+import {Button} from "../ui/button";
+import {signInPolicy} from "../../lib/forms";
+import {useValidatedForm,FormErrors} from "../ui/form";
 
 export default function Authentication({refreshId}:RefreshProps){
  type Policy={ssoOnly:boolean;verified:boolean;configured:boolean;passwordConfigured:boolean};

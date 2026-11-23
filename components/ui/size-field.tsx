@@ -1,6 +1,6 @@
 "use client";
 import type {UseFormRegisterReturn} from "react-hook-form";
-import {units} from "../lib/forms";
+import {units} from "../../lib/forms";
 
 // Unit picker, then the number, with the equivalent in the neighbouring unit shown at the end of the box.
 export default function SizeField({label,size,unit,value,unitValue,choices,placeholder,autoFocus}:{label:string;size:UseFormRegisterReturn;unit:UseFormRegisterReturn;value:string;unitValue:string;choices:string[];placeholder?:string;autoFocus?:boolean}){

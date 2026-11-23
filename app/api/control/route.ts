@@ -1,7 +1,7 @@
 import {z} from "zod";
 import {resolve,paths} from "../../../lib/operation-schema";
 import {bucketName,corsRules,keyName,lifecycle,website} from "../../../lib/forms";
-import { audited } from "../../../lib/audit";
+import {audited} from "../../../lib/db/audit";
 import spec from "../../../lib/admin-spec.json";
 import { session, origin } from "../../../lib/session";
 import { admin, storage } from "../../../lib/garage";

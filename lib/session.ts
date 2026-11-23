@@ -1,4 +1,4 @@
-import {authPolicy} from "./audit";
+import {authPolicy} from "./db/auth-policy";
 import { cookies } from "next/headers";
 import { getIronSession } from "iron-session";
 

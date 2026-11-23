@@ -1,12 +1,12 @@
 "use client";
-import type {AccessKey,BucketInfo,Permissions,Query,Act} from "../lib/models";
+import type {AccessKey,BucketInfo,Permissions,Query,Act} from "../../../lib/models";
 import {z} from "zod";
-import {bucketName} from "../lib/forms";
-import {FormErrors,useValidatedForm} from "./form";
-import {Button} from "../components/ui/button";
+import {bucketName} from "../../../lib/forms";
+import {FormErrors,useValidatedForm} from "../../ui/form";
+import {Button} from "../../ui/button";
 import QuotaForm from "./quota-form";
 import UploadLimitForm from "./upload-limit-form";
-import {call} from "./console";
+import {call} from "../../../lib/client";
 
 export default function Settings({info,keys,act,busy,onQuotaSaved}:{info:BucketInfo;keys:AccessKey[];act:Act;busy:boolean;onQuotaSaved:(b:BucketInfo)=>void}){
  const alias=useValidatedForm(z.object({name:bucketName}),{name:""});

@@ -1,9 +1,9 @@
 "use client";
 import {z} from "zod";
-import {website,lifecycle,parseJson} from "../lib/forms";
-import {FormErrors,useValidatedForm} from "./form";
-import {Button} from "../components/ui/button";
-import {call} from "./console";
+import {website,lifecycle,parseJson} from "../../../lib/forms";
+import {FormErrors,useValidatedForm} from "../../ui/form";
+import {Button} from "../../ui/button";
+import {call} from "../../../lib/client";
 function update(value:string,set:(s:string)=>void,field:string,text:Record<string,string>|null){
  let obj;try{obj=JSON.parse(value)}catch{return}
  if(text)obj[field]=text;else delete obj[field];

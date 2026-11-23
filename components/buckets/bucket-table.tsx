@@ -1,9 +1,9 @@
 "use client";
-import type {RefreshProps,Usage,Bucket} from "../lib/models";
+import type {RefreshProps,Usage,Bucket} from "../../lib/models";
 import {useEffect,useState} from "react";
 import {Database,ChevronRight} from "lucide-react";
-import {bytes} from "../lib/file-types";
-import {label} from "./console";
+import {bytes} from "../../lib/file-types";
+import {label} from "../../lib/client";
 
 function Usage({data}:{data?:Usage|null}){
   if(!data)return <small>Usage unavailable</small>;

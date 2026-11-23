@@ -1,9 +1,9 @@
 "use client";
-import type {FileRow} from "../lib/models";
+import type {FileRow} from "../../../lib/models";
 import {useEffect,useRef,useState} from "react";
 import {Download,X} from "lucide-react";
-import {bytes} from "../lib/file-types";
-import {previewKind,BINARY_LIMIT} from "../lib/preview-types";
+import {bytes} from "../../../lib/file-types";
+import {previewKind,BINARY_LIMIT} from "../../../lib/preview-types";
 export default function ObjectPreview({file,url,onClose}:{file:FileRow;url:string;onClose:()=>void}){
   const modal=useRef<HTMLDialogElement>(null),frame=useRef<HTMLIFrameElement>(null);
   const [ready,setReady]=useState(false),[loading,setLoading]=useState(true),[error,setError]=useState("");

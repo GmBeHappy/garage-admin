@@ -1,10 +1,10 @@
 "use client";
-import type {RefreshProps} from "../lib/models";
-import type {AuditEvent} from "../lib/audit";
-import {useFilter} from "./form";
+import type {RefreshProps} from "../../lib/models";
+import type {AuditEvent} from "../../lib/db/audit";
+import {useFilter} from "../ui/form";
 import {useEffect,useState} from "react";
 import {ChevronLeft,ChevronRight,ChevronsLeft,ChevronsRight} from "lucide-react";
-import {Button} from "../components/ui/button";
+import {Button} from "../ui/button";
 interface Result {events:AuditEvent[]; total:number; page:number; pages:number; size:number}
 export default function Audit({refreshId}:RefreshProps) {
   const [page,setPage]=useState(1),[size,setSize]=useState(50),[result,setResult]=useState<Result|null>(null),[error,setError]=useState("");

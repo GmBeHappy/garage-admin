@@ -1,17 +1,13 @@
 "use client";
 import {useEffect,useState} from "react";
-import {errorMessage} from "../lib/models";
-import {uploadLimitSchema,units} from "../lib/forms";
-import {bytes} from "../lib/file-types";
-import {useValidatedForm,FormErrors} from "./form";
-import {Button} from "../components/ui/button";
-import SizeField from "./size-field";
+import {errorMessage} from "../../../lib/models";
+import {uploadLimitSchema,units} from "../../../lib/forms";
+import {bytes} from "../../../lib/file-types";
+import {useValidatedForm,FormErrors} from "../../ui/form";
+import {Button} from "../../ui/button";
+import SizeField from "../../ui/size-field";
+import {loadUploadLimit,type UploadLimit} from "../../../lib/client";
 
-export type UploadLimit={maxBytes:number;custom:boolean;default:number;ceiling:number};
-export async function loadUploadLimit(bucket:string):Promise<UploadLimit>{
- const r=await fetch("/api/upload-limit?"+new URLSearchParams({bucket}),{cache:"no-store"}),out=await r.json();
- if(!r.ok)throw Error(out.error);return out;
-}
 const formValues=(l:UploadLimit|null)=>{
  if(!l?.custom)return {size:"",unit:"MiB" as const};
  const unit=l.maxBytes%units.GiB===0?"GiB" as const:"MiB" as const;

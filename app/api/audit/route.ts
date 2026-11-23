@@ -1,5 +1,5 @@
 import { session } from "../../../lib/session";
-import { listAudit } from "../../../lib/audit";
+import {listAudit} from "../../../lib/db/audit";
 const sizes = [25, 50, 100];
 export async function GET(req:Request) {
   if (!(await session()).user) return Response.json({error:"Sign in again"},{status:401});

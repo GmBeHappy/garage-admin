@@ -1,8 +1,8 @@
 "use client";
 import {useEffect,useState} from "react";
 import {ArrowUpCircle,RefreshCw} from "lucide-react";
-import {Button} from "../components/ui/button";
-import type {Release} from "../lib/updates";
+import {Button} from "../ui/button";
+import type {Release} from "../../lib/updates";
 type State={direction?:string;worker:{current:string|null;phase:string;message:string;target:string|null}|null;ready:boolean;pending:boolean;revision:string|null;release?:Release};
 export default function Updates(){
  const [data,setData]=useState<State|null>(null),[release,setRelease]=useState<Release|null>(null),[error,setError]=useState(""),[checking,setChecking]=useState(false),[requested,setRequested]=useState(false),[tick,setTick]=useState(0);

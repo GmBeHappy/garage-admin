@@ -1,7 +1,7 @@
 import type {Responses,Query,StorageInput,Groups} from "./models";
 import {paths} from "./operation-schema";
 import {fileType} from "./file-types";
-import { audited } from "./audit";
+import {audited} from "./db/audit";
 
 import * as s3 from "@aws-sdk/client-s3";
 

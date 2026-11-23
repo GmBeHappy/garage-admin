@@ -1,5 +1,6 @@
 import {session,origin} from "../../../lib/session";
-import {audited,uploadLimit,saveUploadLimit} from "../../../lib/audit";
+import {audited} from "../../../lib/db/audit";
+import {uploadLimit,saveUploadLimit} from "../../../lib/db/settings";
 import {uploadLimitInput,DEFAULT_UPLOAD,UPLOAD_CEILING} from "../../../lib/forms";
 import {admin} from "../../../lib/garage";
 import {bytes} from "../../../lib/file-types";

@@ -1,5 +1,6 @@
 import {session,origin} from "../../../lib/session";
-import {authPolicy,saveAuthPolicy,audited} from "../../../lib/audit";
+import {authPolicy,saveAuthPolicy} from "../../../lib/db/auth-policy";
+import {audited} from "../../../lib/db/audit";
 import {signInPolicy} from "../../../lib/forms";
 const configured=()=>["OIDC_ISSUER","OIDC_CLIENT_ID","OIDC_SECRET","OIDC_ADMIN_GROUP"].every(k=>!!process.env[k]);
 export async function GET(){

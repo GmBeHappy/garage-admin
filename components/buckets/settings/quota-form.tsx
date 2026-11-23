@@ -1,12 +1,12 @@
 "use client";
-import type {BucketInfo,Usage} from "../lib/models";
-import {errorMessage} from "../lib/models";
+import type {BucketInfo,Usage} from "../../../lib/models";
+import {errorMessage} from "../../../lib/models";
 
-import {quotaSchema,units} from "../lib/forms";
-import {useValidatedForm,FormErrors} from "./form";
-import {Button} from "../components/ui/button";
-import {call} from "./console";
-import SizeField from "./size-field";
+import {quotaSchema,units} from "../../../lib/forms";
+import {useValidatedForm,FormErrors} from "../../ui/form";
+import {Button} from "../../ui/button";
+import {call} from "../../../lib/client";
+import SizeField from "../../ui/size-field";
 
 export default function QuotaForm({info,onSaved,onCancel}:{info:BucketInfo;onSaved:(b:BucketInfo)=>void;onCancel?:()=>void}){
  const size=info.quotas?.maxSize;
