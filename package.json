@@ -2,7 +2,7 @@
   "name": "garage-console",
   "private": true,
   "scripts": {
-    "dev": "bun preview/build.ts && bun --bun next dev",
+    "dev": "bun preview/build.ts && bun --bun next dev --webpack",
     "build": "bun preview/build.ts && bun --bun next build --webpack",
     "start": "bun --bun next start",
     "typecheck": "tsc --noEmit"

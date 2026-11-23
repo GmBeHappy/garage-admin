@@ -79,6 +79,19 @@ docker pull ghcr.io/gmbehappy/garage-admin:latest
 
 To build locally, clone this repository and run `docker build -t garage-admin:local .`. To run from source, use `bun install --frozen-lockfile`, `bun run typecheck`, and `bun run build`. Export the server environment variables above, then run the standalone server from the Docker image or use `bun run dev` for development.
 
+## Development
+
+For hot reload without installing Bun or rebuilding the image, run the dev server in a container with the source mounted. It reads Garage credentials from `console.env` but keeps its own audit log in `./audit.sqlite`.
+
+```sh
+docker compose -f compose.dev.yaml up -d      # http://localhost:3000
+docker compose -f compose.dev.yaml logs -f dev
+docker compose -f compose.dev.yaml exec dev bun run typecheck
+docker compose -f compose.dev.yaml down
+```
+
+Saved changes apply in the browser immediately. Restart the service after editing `package.json`, `next.config.ts` or `console.env`.
+
 ## License
 
 The original console code is distributed under the [MIT License](LICENSE). The bundled Garage API specification, Garage artwork and third-party components retain their upstream terms. See [third-party notices](THIRD_PARTY.md).
