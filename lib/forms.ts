@@ -30,6 +30,6 @@ export const lifecycle=z.array(z.looseObject({
 }).refine(r=>r.Expiration||r.AbortIncompleteMultipartUpload,"Choose an expiration or upload cleanup action.")).min(1,"Add a lifecycle rule or delete the configuration.").refine(rs=>{const ids=rs.map(r=>r.ID).filter(Boolean);return new Set(ids).size===ids.length},"Use unique rule IDs.");
 export const website=z.looseObject({IndexDocument:z.object({Suffix:z.string().min(1).regex(/^[^/]+$/,"Enter an index filename without a slash.")}),ErrorDocument:z.object({Key:z.string().min(1)}).optional()});
 export const folderSchema=z.object({name:z.string().min(1,"Enter a folder name.").refine(v=>v.trim().length>0&&!v.includes("/")&&v!=="."&&v!=="..","Use a single folder name without slashes.")});
-export const fileSchema=z.object({file:z.file().max(32*1024*1024,"Maximum upload size is 32 MiB.")});
+export const MAX_UPLOAD=32*1024*1024;
 export const parseJson=z.string().transform((s,ctx)=>{try{return JSON.parse(s)}catch{ctx.addIssue({code:"custom",message:"Enter valid JSON."});return z.NEVER}});
 export const signInPolicy=z.object({ssoOnly:z.boolean()});
