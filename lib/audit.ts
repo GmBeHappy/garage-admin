@@ -37,10 +37,15 @@ export async function audited<T>(actor:string, action:string, target:string, wor
   return result;
 }
 
-export function listAudit(before:number, filter:string) {
-  return db().query(`SELECT * FROM events WHERE id < ?
-    AND (?='' OR instr(lower(actor||' '||action||' '||target||' '||outcome),lower(?))>0)
-    ORDER BY id DESC LIMIT 51`).all(before || Number.MAX_SAFE_INTEGER, filter, filter);
+export interface AuditEvent {id:number; time:string; actor:string; action:string; target:string; outcome:string}
+const matches = "(?1='' OR instr(lower(actor||' '||action||' '||target||' '||outcome),lower(?1))>0)";
+export function listAudit(page:number, size:number, filter:string) {
+  const {total} = db().query<{total:number},[string]>(`SELECT count(*) AS total FROM events WHERE ${matches}`).get(filter)!;
+  const pages = Math.max(1, Math.ceil(total/size));
+  const current = Math.min(Math.max(1, page), pages);
+  const events = db().query<AuditEvent,[string,number,number]>(`SELECT * FROM events WHERE ${matches}
+    ORDER BY id DESC LIMIT ?2 OFFSET ?3`).all(filter, size, (current-1)*size);
+  return {events, total, page:current, pages, size};
 }
 
 export function authPolicy(){
