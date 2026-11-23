@@ -2,7 +2,7 @@
 import {useEffect,useRef,useState} from "react";
 import {Upload,FolderUp,FolderPlus} from "lucide-react";
 import {Button} from "../components/ui/button";
-import {folderSchema,MAX_UPLOAD} from "../lib/forms";
+import {folderSchema} from "../lib/forms";
 import {bytes} from "../lib/file-types";
 import {FormErrors,useValidatedForm} from "./form";
 type Picked={file:File;path:string};
@@ -25,7 +25,7 @@ function dropped(data:DataTransfer):Promise<Picked[]>{
 }
 const hasFiles=(e:DragEvent)=>!!e.dataTransfer?.types.includes("Files");
 type Upload=(items:{key:string;file:File}[],progress:(done:number)=>void)=>Promise<string[]>;
-export default function ObjectForms({folder,busy,change,upload}:{folder:string;busy:boolean;change:(key:string,options:RequestInit)=>Promise<boolean>;upload:Upload}){
+export default function ObjectForms({folder,busy,change,upload,limit}:{folder:string;busy:boolean;limit:number;change:(key:string,options:RequestInit)=>Promise<boolean>;upload:Upload}){
  const [open,setOpen]=useState(false),[progress,setProgress]=useState<{done:number;total:number}|null>(null),[problems,setProblems]=useState<string[]>([]);
  const dir=useValidatedForm(folderSchema,{name:""});
  const create=dir.handleSubmit(async({name})=>{
@@ -50,13 +50,13 @@ export default function ObjectForms({folder,busy,change,upload}:{folder:string;b
  },[]);
  async function send(files:Picked[]){
    if(!files.length)return;
-   const large=files.filter(f=>f.file.size>MAX_UPLOAD),items=files.filter(f=>f.file.size<=MAX_UPLOAD).map(f=>({key:folder+f.path,file:f.file}));
-   const skipped=large.map(f=>f.path+": larger than the "+bytes(MAX_UPLOAD)+" upload limit");
+   const large=files.filter(f=>f.file.size>limit),items=files.filter(f=>f.file.size<=limit).map(f=>({key:folder+f.path,file:f.file}));
+   const skipped=large.map(f=>f.path+": larger than the "+bytes(limit)+" upload limit");
    setProblems([]);
    if(!items.length){setProblems(skipped);return}
    const total=items.reduce((n,i)=>n+i.file.size,0);
    const what=items.length===1?items[0].key.slice(folder.length):items.length+" files ("+bytes(total)+")";
-   if(!confirm("Upload "+what+" to "+(folder||"the bucket root")+"?"+(skipped.length?"\n\n"+skipped.length+" file(s) over "+bytes(MAX_UPLOAD)+" will be skipped.":"")+"\n\nExisting files with the same names will be replaced."))return;
+   if(!confirm("Upload "+what+" to "+(folder||"the bucket root")+"?"+(skipped.length?"\n\n"+skipped.length+" file(s) over "+bytes(limit)+" will be skipped.":"")+"\n\nExisting files with the same names will be replaced."))return;
    setProgress({done:0,total:items.length});
    const failed=await upload(items,done=>setProgress({done,total:items.length}));
    setProgress(null);setProblems([...skipped,...failed]);

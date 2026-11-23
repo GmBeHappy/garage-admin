@@ -1,6 +1,7 @@
 import {errorMessage} from "../../../lib/models";
 import {previewKind,TEXT_LIMIT,BINARY_LIMIT} from "../../../lib/preview-types";
-import {audited} from "../../../lib/audit";
+import {audited,uploadLimit} from "../../../lib/audit";
+import {bytes} from "../../../lib/file-types";
 import {HeadObjectCommand,GetObjectCommand,PutObjectCommand,DeleteObjectCommand} from "@aws-sdk/client-s3";
 import {session,origin} from "../../../lib/session";
 import {adminBucket,client} from "../../../lib/garage";
@@ -36,10 +37,10 @@ async function handle(req:Request) {
     }
     if(req.method==="DELETE") await s3.send(new DeleteObjectCommand(params));
     else {
-      const length=req.headers.get("content-length");
-      if(length===null || Number(length)>32*1024*1024)return new Response("Maximum upload size is 32 MiB",{status:413});
+      const length=req.headers.get("content-length"),{maxBytes}=uploadLimit(params.Bucket),tooLarge="Maximum upload size for this bucket is "+bytes(maxBytes);
+      if(length===null || Number(length)>maxBytes)return new Response(tooLarge,{status:413});
       const body=new Uint8Array(await req.arrayBuffer());
-      if(body.length>32*1024*1024)return new Response("Maximum upload size is 32 MiB",{status:413});
+      if(body.length>maxBytes)return new Response(tooLarge,{status:413});
       await s3.send(new PutObjectCommand({...params,Body:body,ContentType:req.headers.get("content-type")||"application/octet-stream"}));
     }
     return new Response(null,{status:204});

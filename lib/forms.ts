@@ -30,6 +30,16 @@ export const lifecycle=z.array(z.looseObject({
 }).refine(r=>r.Expiration||r.AbortIncompleteMultipartUpload,"Choose an expiration or upload cleanup action.")).min(1,"Add a lifecycle rule or delete the configuration.").refine(rs=>{const ids=rs.map(r=>r.ID).filter(Boolean);return new Set(ids).size===ids.length},"Use unique rule IDs.");
 export const website=z.looseObject({IndexDocument:z.object({Suffix:z.string().min(1).regex(/^[^/]+$/,"Enter an index filename without a slash.")}),ErrorDocument:z.object({Key:z.string().min(1)}).optional()});
 export const folderSchema=z.object({name:z.string().min(1,"Enter a folder name.").refine(v=>v.trim().length>0&&!v.includes("/")&&v!=="."&&v!=="..","Use a single folder name without slashes.")});
-export const MAX_UPLOAD=32*1024*1024;
+export const DEFAULT_UPLOAD=32*units.MiB;
+// Uploads are buffered in server memory before being sent to Garage, so keep a hard ceiling.
+export const UPLOAD_CEILING=units.GiB;
+export const uploadLimitSchema=z.object({size:z.string(),unit:z.enum(["MiB","GiB"])}).transform((v,ctx)=>{
+  const s=v.size.trim();if(!s)return {maxBytes:null};
+  const n=Math.round(Number(s)*units[v.unit]);
+  if(!/^\d+(?:\.\d+)?$/.test(s)||n<1)ctx.addIssue({code:"custom",path:["size"],message:"Enter a positive size."});
+  else if(n>UPLOAD_CEILING)ctx.addIssue({code:"custom",path:["size"],message:"The largest allowed limit is 1 GiB."});
+  return {maxBytes:n};
+});
+export const uploadLimitInput=z.object({bucket:z.string().regex(/^[a-f0-9]{64}$/),maxBytes:z.number().int().min(1).max(UPLOAD_CEILING).nullable()});
 export const parseJson=z.string().transform((s,ctx)=>{try{return JSON.parse(s)}catch{ctx.addIssue({code:"custom",message:"Enter valid JSON."});return z.NEVER}});
 export const signInPolicy=z.object({ssoOnly:z.boolean()});

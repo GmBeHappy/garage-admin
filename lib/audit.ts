@@ -1,4 +1,5 @@
 import { Database } from "bun:sqlite";
+import { DEFAULT_UPLOAD } from "./forms";
 
 let database:Database | undefined;
 function db() {
@@ -12,7 +13,10 @@ function db() {
     CREATE TABLE IF NOT EXISTS sign_in_policy (
       id INTEGER PRIMARY KEY CHECK(id=1), sso_only INTEGER NOT NULL, password_epoch INTEGER NOT NULL
     );
-    INSERT OR IGNORE INTO sign_in_policy VALUES(1,0,0)`);
+    INSERT OR IGNORE INTO sign_in_policy VALUES(1,0,0);
+    CREATE TABLE IF NOT EXISTS user_settings (
+      bucket TEXT NOT NULL, key TEXT NOT NULL, value TEXT NOT NULL, PRIMARY KEY(bucket,key)
+    )`);
   database = connection;
   return database;
 }
@@ -55,4 +59,22 @@ export function authPolicy(){
 export function saveAuthPolicy(ssoOnly:boolean){
   db().query("UPDATE sign_in_policy SET password_epoch=password_epoch+CASE WHEN sso_only=0 AND ?=1 THEN 1 ELSE 0 END,sso_only=? WHERE id=1").run(Number(ssoOnly),Number(ssoOnly));
   return authPolicy();
+}
+
+// Console-only per-bucket settings that Garage itself has no field for.
+function setting(bucket:string,key:string){
+  return db().query<{value:string},[string,string]>("SELECT value FROM user_settings WHERE bucket=? AND key=?").get(bucket,key)?.value;
+}
+function saveSetting(bucket:string,key:string,value:string|null){
+  if(value===null)db().query("DELETE FROM user_settings WHERE bucket=? AND key=?").run(bucket,key);
+  else db().query("INSERT INTO user_settings(bucket,key,value) VALUES(?,?,?) ON CONFLICT(bucket,key) DO UPDATE SET value=excluded.value").run(bucket,key,value);
+}
+// Maximum single-file upload in bytes; buckets without a value use the default.
+export function uploadLimit(bucket:string){
+  const value=setting(bucket,"upload_limits");
+  return {maxBytes:value===undefined?DEFAULT_UPLOAD:Number(value),custom:value!==undefined};
+}
+export function saveUploadLimit(bucket:string,maxBytes:number|null){
+  saveSetting(bucket,"upload_limits",maxBytes===null?null:String(maxBytes));
+  return uploadLimit(bucket);
 }
