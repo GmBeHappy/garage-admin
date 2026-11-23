@@ -1,12 +1,12 @@
 "use client";
-import type {Groups,RefreshProps} from "../lib/models";
-import {errorMessage} from "../lib/models";
+import type {Groups,RefreshProps} from "../../lib/models";
+import {errorMessage} from "../../lib/models";
 
 import {useEffect,useState} from "react";
 import {ChartNoAxesColumn} from "lucide-react";
-import {bytes,types} from "../lib/file-types";
-import {call} from "./console";
-import {Button} from "../components/ui/button";
+import {bytes,types} from "../../lib/file-types";
+import {call} from "../../lib/client";
+import {Button} from "../ui/button";
 export default function Composition({bucket,revision,refreshId}:RefreshProps & {bucket:string;revision:number}){
  const [groups,setGroups]=useState<Groups|null>(null),[running,setRunning]=useState(false),[error,setError]=useState("");
  const [attempt,setAttempt]=useState(0);

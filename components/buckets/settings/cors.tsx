@@ -1,13 +1,13 @@
 "use client";
-import type {CorsRule} from "../lib/models";
-import {errorMessage} from "../lib/models";
+import type {CorsRule} from "../../../lib/models";
+import {errorMessage} from "../../../lib/models";
 
 import {z} from "zod";
-import {corsRules} from "../lib/forms";
-import {useValidatedForm,FormErrors} from "./form";
+import {corsRules} from "../../../lib/forms";
+import {useValidatedForm,FormErrors} from "../../ui/form";
 import {Globe,Plus,X,ChevronDown,Trash2} from "lucide-react";
-import {Button} from "../components/ui/button";
-import {call} from "./console";
+import {Button} from "../../ui/button";
+import {call} from "../../../lib/client";
 
 const presets:{name:string;methods:CorsRule["AllowedMethods"]}[]=[
   {name:"Read files",methods:["GET","HEAD"]},

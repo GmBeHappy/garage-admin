@@ -1,0 +1,22 @@
+# Development server with hot reload. Source edits apply instantly; no image rebuild.
+#   docker compose -f compose.dev.yaml up        (Ctrl+C to stop)
+# Open http://localhost:3000. Uses console.env for Garage credentials, but keeps its
+# own audit log (./audit.sqlite) so the production console's log stays untouched.
+name: garage-admin-dev
+services:
+  dev:
+    image: oven/bun:1.4.2
+    user: bun
+    working_dir: /app
+    command: sh -c "bun install --frozen-lockfile && bun run dev -H 0.0.0.0 -p 3000"
+    env_file:
+      - path: ./console.env
+        format: raw
+    environment:
+      CONSOLE_URL: http://localhost:3000
+      AUDIT_DB: /app/audit.sqlite
+      NEXT_TELEMETRY_DISABLED: "1"
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - .:/app

@@ -1,12 +1,12 @@
 "use client";
-import {errorMessage} from "../lib/models";
+import {errorMessage} from "../../lib/models";
 
 import {useState,useMemo} from "react";
-import spec from "../lib/admin-spec.json";
-import {resolve,operationFormSchema,paths,type Operation,type Schema} from "../lib/operation-schema";
-import {useValidatedForm,FormErrors} from "./form";
-import {call} from "./console";
-import {Button} from "../components/ui/button";
+import spec from "../../lib/admin-spec.json";
+import {resolve,operationFormSchema,paths,type Operation,type Schema} from "../../lib/operation-schema";
+import {useValidatedForm,FormErrors} from "../ui/form";
+import {call} from "../../lib/client";
+import {Button} from "../ui/button";
 const ops=Object.entries(paths).filter(([p])=>p.startsWith("/v2/")).map(([,entry])=>Object.values(entry)[0]!);
 function sample(s:Schema|boolean|undefined):unknown{if(!s||typeof s==="boolean")return "";if(s.oneOf)return sample(s.oneOf.find(x=>x.type!=="null"));if(s.properties)return Object.fromEntries(Object.entries(s.properties).filter(([k])=>(s.required||[]).includes(k)).map(([k,v])=>[k,sample(v)]));if(s.type==="array")return [];if(s.type==="integer")return 0;if(s.type==="boolean")return false;return "";}
 function RequestForm({op}:{op:Operation}){

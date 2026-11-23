@@ -1,12 +1,12 @@
 "use client";
-import type {AccessKey} from "../lib/models";
-import {errorMessage} from "../lib/models";
+import type {AccessKey} from "../../lib/models";
+import {errorMessage} from "../../lib/models";
 
-import {useFilter} from "./form";
+import {useFilter} from "../ui/form";
 import {useState,useRef,useEffect} from "react";
 import {Eye,EyeOff,KeyRound,Copy} from "lucide-react";
-import {Button} from "../components/ui/button";
-import {call} from "./console";
+import {Button} from "../ui/button";
+import {call} from "../../lib/client";
 export default function KeyList({keys}:{keys:AccessKey[]}){
  const [shown,setShown]=useState<{id:string;secret:string}|null>(null),[busy,setBusy]=useState(""),[error,setError]=useState(""),[copied,setCopied]=useState(false);
  const {value:filter,input:filterInput}=useFilter();

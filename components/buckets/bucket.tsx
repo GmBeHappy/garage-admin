@@ -1,18 +1,18 @@
 "use client";
-import type {Bucket as BucketRow,BucketInfo as Info,RefreshProps,AccessKey,CorsRule} from "../lib/models";
-import {errorMessage} from "../lib/models";
+import type {Bucket as BucketRow,BucketInfo as Info,RefreshProps,AccessKey,CorsRule} from "../../lib/models";
+import {errorMessage} from "../../lib/models";
 
 import {useEffect,useState} from "react";
 import {Folder,Globe,Timer,Settings2,Network,HardDrive,KeyRound,Tag,Layers,Pencil,ChevronDown} from "lucide-react";
-import {Button} from "../components/ui/button";
-import {bytes} from "../lib/file-types";
-import {call,label} from "./console";
+import {Button} from "../ui/button";
+import {bytes} from "../../lib/file-types";
+import {call,label} from "../../lib/client";
 import Composition from "./composition";
-import QuotaForm from "./quota-form";
-import Cors from "./cors";
-import Explorer from "./explorer";
-import {ConfigForm} from "./config-fields";
-import Settings from "./bucket-settings";
+import QuotaForm from "./settings/quota-form";
+import Cors from "./settings/cors";
+import Explorer from "./objects/explorer";
+import {ConfigForm} from "./settings/config-fields";
+import Settings from "./settings/bucket-settings";
 
 const sections=[["General",Settings2],["CORS",Network],["Lifecycle",Timer],["Website",Globe]] as const;
 function BucketInfo({bucket,info,revision,refreshId,onQuotaSaved}:RefreshProps & {bucket:BucketRow;info:Info|null;revision:number;onQuotaSaved:(b:Info)=>void}){

@@ -1,9 +1,9 @@
 "use client";
-import type {Dashboard,Responses} from "../lib/models";
+import type {Dashboard,Responses} from "../../lib/models";
 import {useEffect,useState} from "react";
 import {Activity,Layers,Network,Server,HardDrive} from "lucide-react";
-import {bytes} from "../lib/file-types";
-import {call} from "./console";
+import {bytes} from "../../lib/file-types";
+import {call} from "../../lib/client";
 export default function Cluster({data}:{data:Dashboard}){
  const {cluster,health}=data;const [layout,setLayout]=useState<Responses["GetClusterLayout"]|null>(null),[error,setError]=useState("");
  useEffect(()=>{let current=true;call({op:"GetClusterLayout"}).then(l=>{if(current){setLayout(l);setError("")}}).catch(e=>current&&setError(e.message));return()=>{current=false}},[data]);

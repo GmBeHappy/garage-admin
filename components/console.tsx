@@ -1,34 +1,23 @@
 "use client";
-import type {Dashboard,Bucket as BucketRow,Responses,Query,StorageInput,FolderPage,Groups} from "../lib/models";
+import type {Dashboard,Bucket as BucketRow} from "../lib/models";
+import {call,label} from "../lib/client";
 import {errorMessage} from "../lib/models";
 
-import {useFilter} from "./form";
+import {useFilter} from "./ui/form";
 import {useState, useEffect} from "react";
 import {LayoutDashboard, Database, KeyRound, Network, Terminal, ArrowUpRight, ChevronRight, Search, Plus, Layers, ShieldCheck, LogOut, RefreshCw, ArrowUpCircle, HardDrive, Box, Server} from "lucide-react";
-import {Button} from "../components/ui/button";
-import Bucket from "./bucket";
-import BucketTable from "./bucket-table";
+import {Button} from "./ui/button";
+import Bucket from "./buckets/bucket";
+import BucketTable from "./buckets/bucket-table";
 import CreateForm from "./create-form";
-import Cluster from "./cluster";
-import {ThemeSwitch} from "./theme";
-import KeyList from "./key-list";
-import Updates from "./updates";
-import Authentication from "./authentication";
-import Audit from "./audit";
-import Operations from "./operations";
+import Cluster from "./cluster/cluster";
+import {ThemeSwitch} from "./ui/theme-switch";
+import KeyList from "./keys/key-list";
+import Updates from "./admin/updates";
+import Authentication from "./admin/authentication";
+import Audit from "./admin/audit";
+import Operations from "./cluster/operations";
 
-type AdminInput={op:string;query?:Query;body?:unknown};
-export function call<K extends keyof Responses>(input:AdminInput & {op:K},signal?:AbortSignal):Promise<Responses[K]>;
-export function call(input:StorageInput & {kind:"objects"},signal?:AbortSignal):Promise<FolderPage>;
-export function call(input:StorageInput & {kind:"composition"},signal?:AbortSignal):Promise<{groups:Groups;next?:string}>;
-export function call(input:AdminInput|StorageInput,signal?:AbortSignal):Promise<unknown>;
-export async function call(input:AdminInput|StorageInput,signal?:AbortSignal) {
-  const res = await fetch("/api/control",{signal,method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(input)});
-  const data = await res.json();
-  if (!res.ok) throw Error(data.error || "Request failed");
-  return data;
-}
-export const label = (b:BucketRow) => b.globalAliases?.[0] || b.localAliases?.[0]?.alias || b.id;
 const menu = [["Overview",LayoutDashboard],["Buckets",Database],["Access keys",KeyRound],["Cluster",Network],["Admin operations",Terminal],["Audit log",ShieldCheck],["Authentication",KeyRound],["Updates",ArrowUpCircle]] as const;
 function Rack() {return <svg className="rack" aria-hidden="true" viewBox="0 0 260 155"><defs><pattern id="dots" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#66858e"/></pattern></defs><rect width="260" height="155" fill="url(#dots)"/>{[76,53,30].map((y,i)=><g key={y} transform={'translate(47 '+y+')'} strokeLinejoin="round"><path d="M0 26 77 0 156 25 79 54Z" fill={i===2?"#e9f8fb":"#7299a2"} stroke="#94bec8"/><path d="m0 26 79 28v17L0 43Z" fill="#426572" stroke="#a6c7ca"/><path d="m79 54 77-29v17L79 71Z" fill="#253f4d" stroke="#a6c7ca"/><path d="m12 35 40 14" stroke="#ffaf48" strokeWidth="3"/><circle cx="135" cy="40" r="2" fill="#65ddda"/></g>)}</svg>}
 export default function Console({initial,user}:{initial:Dashboard;user:string}) {

@@ -1,10 +1,10 @@
-import {ThemeSwitch} from "./theme";
+import {ThemeSwitch} from "../components/ui/theme-switch";
 import {ShieldCheck,ArrowRight} from "lucide-react";
-import {authPolicy} from "../lib/audit";
-import Console from "./console";
+import {authPolicy} from "../lib/db/auth-policy";
+import Console from "../components/console";
 import { session } from "../lib/session";
 import { admin } from "../lib/garage";
-import LoginForm from "./login-form";
+import LoginForm from "../components/login-form";
 export const dynamic = "force-dynamic";
 export default async function Page({searchParams}:{searchParams:Promise<{error?:string}>}) {
   const {user} = await session();

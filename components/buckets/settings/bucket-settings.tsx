@@ -1,11 +1,12 @@
 "use client";
-import type {AccessKey,BucketInfo,Permissions,Query,Act} from "../lib/models";
+import type {AccessKey,BucketInfo,Permissions,Query,Act} from "../../../lib/models";
 import {z} from "zod";
-import {bucketName} from "../lib/forms";
-import {FormErrors,useValidatedForm} from "./form";
-import {Button} from "../components/ui/button";
+import {bucketName} from "../../../lib/forms";
+import {FormErrors,useValidatedForm} from "../../ui/form";
+import {Button} from "../../ui/button";
 import QuotaForm from "./quota-form";
-import {call} from "./console";
+import UploadLimitForm from "./upload-limit-form";
+import {call} from "../../../lib/client";
 
 export default function Settings({info,keys,act,busy,onQuotaSaved}:{info:BucketInfo;keys:AccessKey[];act:Act;busy:boolean;onQuotaSaved:(b:BucketInfo)=>void}){
  const alias=useValidatedForm(z.object({name:bucketName}),{name:""});
@@ -26,6 +27,7 @@ export default function Settings({info,keys,act,busy,onQuotaSaved}:{info:BucketI
  });
  const update=(op:string,body:unknown,query?:Query)=>act(()=>call({op,body,query}));
  return <><h3>Quotas</h3><QuotaForm info={info} onSaved={onQuotaSaved}/>
+ <hr/><h3>Upload limit</h3><UploadLimitForm bucket={info.id}/>
  <hr/><h3>Global aliases</h3>{info.globalAliases.map(a=><div className="listrow" key={a}>{a}<Button size="sm" variant="outline" disabled={busy} onClick={()=>{if(confirm("Remove the global alias "+a+"?"))update("RemoveBucketAlias",{bucketId:info.id,globalAlias:a})}}>Remove</Button></div>)}<form noValidate className="toolbar" onSubmit={alias.handleSubmit(({name})=>update("AddBucketAlias",{bucketId:info.id,globalAlias:name}))}><input {...alias.register("name")} placeholder="New global alias" aria-label="New global alias"/><Button disabled={busy}>Add alias</Button><FormErrors errors={alias.formState.errors}/></form>
  <hr/><form noValidate onSubmit={apply}><h3>Key permissions</h3><label>Access key<select {...access.register("selected",{onChange:e=>{
    const permissions=info.keys.find(k=>k.accessKeyId===e.target.value)?.permissions||defaults;

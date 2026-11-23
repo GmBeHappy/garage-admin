@@ -1,5 +1,6 @@
 import {passwordSchema} from "../../../lib/forms";
-import { beginAudit,authPolicy } from "../../../lib/audit";
+import {beginAudit} from "../../../lib/db/audit";
+import {authPolicy} from "../../../lib/db/auth-policy";
 import * as oidc from "openid-client";
 import { timingSafeEqual, createHash } from "node:crypto";
 import { origin, session } from "../../../lib/session";
